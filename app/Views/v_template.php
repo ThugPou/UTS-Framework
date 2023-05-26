@@ -14,8 +14,34 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="<?= base_url('adminlte') ?>/plugins/fontawesome-free/css/all.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="<?= base_url('adminlte') ?>/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="<?= base_url('adminlte') ?>/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="<?= base_url('adminlte') ?>/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="<?= base_url('adminlte') ?>/dist/css/adminlte.min.css">
+    <!-- REQUIRED SCRIPTS -->
+    <!-- jQuery -->
+    <script src="<?= base_url('adminlte') ?>/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="<?= base_url('adminlte') ?>/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="<?= base_url('adminlte') ?>/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="<?= base_url('adminlte') ?>/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="<?= base_url('adminlte') ?>/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="<?= base_url('adminlte') ?>/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="<?= base_url('adminlte') ?>/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="<?= base_url('adminlte') ?>/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="<?= base_url('adminlte') ?>/plugins/jszip/jszip.min.js"></script>
+    <script src="<?= base_url('adminlte') ?>/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="<?= base_url('adminlte') ?>/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="<?= base_url('adminlte') ?>/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="<?= base_url('adminlte') ?>/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="<?= base_url('adminlte') ?>/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <!-- ChartJS -->
+    <script src="<?= base_url('adminlte') ?>/plugins/chart.js/Chart.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="<?= base_url('adminlte') ?>/dist/js/adminlte.min.js"></script>
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -29,18 +55,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="index3.html" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a href="#" class="nav-link">Contact</a>
+                    <a href="<?= base_url('Admin') ?>" class="nav-link">Home</a>
                 </li>
             </ul>
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-                        <i class="fas fa-th-large"></i>
+                    <a class="nav-link" href="<?= base_url('Home/Logout') ?>">
+                        <i class="fas fa-sign-out-alt">Logout</i>
                     </a>
                 </li>
             </ul>
@@ -63,7 +86,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <img src="<?= base_url('adminlte') ?>/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">Alexander Pierce</a>
+                        <a href="#" class="d-block"><?= session()->get('nama_user') ?></a>
                     </div>
                 </div>
 
@@ -82,7 +105,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </li>
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="<?= base_url('Transaksi') ?>" class="nav-link">
                                 <i class="nav-icon fas fa-cash-register"></i>
                                 <p>
                                     Transaksi
@@ -181,15 +204,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </footer>
     </div>
     <!-- ./wrapper -->
-
-    <!-- REQUIRED SCRIPTS -->
-
-    <!-- jQuery -->
-    <script src="<?= base_url('adminlte') ?>/plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="<?= base_url('adminlte') ?>/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="<?= base_url('adminlte') ?>/dist/js/adminlte.min.js"></script>
 </body>
 
 </html>
