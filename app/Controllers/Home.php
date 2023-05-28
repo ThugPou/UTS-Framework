@@ -6,6 +6,7 @@ use App\Models\ModelUser;
 
 class Home extends BaseController
 {
+    public $ModelUser;
     public function __construct()
     {
         $this->ModelUser = new ModelUser();

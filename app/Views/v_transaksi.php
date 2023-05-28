@@ -8,12 +8,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Top Navigation</title>
+  <title>Kasir Restoran</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="<?= base_url('adminlte') ?>/plugins/fontawesome-free/css/all.min.css">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="<?= base_url('adminlte') ?>/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="<?= base_url('adminlte') ?>/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="<?= base_url('adminlte') ?>/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
   <!-- SweetAlert2 -->
   <link rel="stylesheet" href="<?= base_url('adminlte') ?>/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
   <!-- Theme style -->
@@ -24,6 +28,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <script src="<?= base_url('adminlte') ?>/plugins/jquery/jquery.min.js"></script>
   <!-- Bootstrap 4 -->
   <script src="<?= base_url('adminlte') ?>/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- DataTables  & Plugins -->
+  <script src="<?= base_url('adminlte') ?>/plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="<?= base_url('adminlte') ?>/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="<?= base_url('adminlte') ?>/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="<?= base_url('adminlte') ?>/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+  <script src="<?= base_url('adminlte') ?>/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+  <script src="<?= base_url('adminlte') ?>/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+  <script src="<?= base_url('adminlte') ?>/plugins/jszip/jszip.min.js"></script>
+  <script src="<?= base_url('adminlte') ?>/plugins/pdfmake/pdfmake.min.js"></script>
+  <script src="<?= base_url('adminlte') ?>/plugins/pdfmake/vfs_fonts.js"></script>
+  <script src="<?= base_url('adminlte') ?>/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+  <script src="<?= base_url('adminlte') ?>/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+  <script src="<?= base_url('adminlte') ?>/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
   <!-- SweetAlert2 -->
   <script src="<?= base_url('adminlte') ?>/plugins/sweetalert2/sweetalert2.min.js"></script>
   <!-- AdminLTE App -->
@@ -50,7 +67,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Right navbar links -->
         <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
           <li class="nav-item">
-            <?php if (session()->get('level' == '1')) { ?>
+            <?php
+
+            use App\Controllers\Transaksi;
+
+            if (session()->get('level' == '1')) { ?>
               <a class="nav-link" href="<?= base_url('Admin') ?>">
                 <i class="fas fa-tachometer-alt"></i>
               </a>
@@ -122,14 +143,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <div class="card-body">
                 <div class="row">
                   <div class="col-12">
-                    <?php echo form_open() ?>
+                    <?php echo form_open('Transaksi/InsertData') ?>
                     <div class="row">
                       <div class="col-2 input-group">
                         <input name="kode_menu" id="kode_menu" class="form-control" placeholder="Kode Menu" autocomplete="off">
                         <span class="input-group-append">
-                          <button class="btn btn-primary btn-flat">
+                          <a href="#" class="btn btn-primary btn-flat" data-toggle="modal" data-target="#view-menu">
                             <i class="fas fa-search"></i>
-                          </button>
+                          </a>
                           <button class="btn btn-danger btn-flat">
                             <i class="fas fa-times"></i>
                           </button>
@@ -159,7 +180,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <hr>
                 <div class="row">
                   <div class="col-lg-12">
-                    <table class="table table-bordered">
+                    <table id="example1" class="table table-bordered table-striped">
                       <thead>
                         <tr class="text-center">
                           <th>Kode Menu</th>
@@ -172,30 +193,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td>121321321</td>
-                          <td>ayam</td>
-                          <td>makanan</td>
-                          <td class="text-right">@ Rp 15,000</td>
-                          <td class="text-center">2</td>
-                          <td class="text-right">Rp 30,000</td>
-                          <td class="text-center"><a class="btn btn-flat btn-danger"><i class="fa fa-times"></i></a></td>
-                        </tr>
+                        <?php foreach ($transaksi as $key => $value) { ?>
+                          <tr>
+                            <td><?= $value['kode_menu'] ?></td>
+                            <td><?= $value['nama_menu'] ?></td>
+                            <td><?= $value['nama_kategori'] ?></td>
+                            <td class="text-right"><?= $value['harga'] ?></td>
+                            <td class="text-center"><?= $value['qty'] ?></td>
+                            <td class="text-right"><?= $total_harga = $value['harga'] * $value['qty'] ?></td>
+                            <td class="text-center"><a class="btn btn-flat btn-danger" data-toggle="modal" data-target="#delete-data<?= $value['id_rinci'] ?>"><i class="fa fa-times"></i></a></td>
+                          </tr>
+                        <?php } ?>
                       </tbody>
                     </table>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          <!-- /.col-md-12 -->
-          <div class="col-lg-12">
-            <div class="card card-primary card-outline">
-              <div class="card-header">
-                <h5 class="card-title m-0"></h5>
-              </div>
-              <div class="card-body bg-black text-center">
-                <h1 class="text-blue">Satu Juta Lima Ratus Ribu Rupiah</h1>
               </div>
             </div>
           </div>
@@ -206,6 +218,73 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </div>
     <!-- /.content-wrapper -->
 
+    <div class="modal fade" id="view-menu">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">View Menu</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <table id="example1" class="table table-bordered table-striped">
+            <thead>
+              <tr class="text-center">
+                <th width="50px">No</th>
+                <th>Kode Menu</th>
+                <th>Nama Menu</th>
+                <th>Kategori</th>
+                <th width="100px">Harga</th>
+                <th>Stok</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php $no = 1;
+              foreach ($menu as $key => $value) { ?>
+                <tr>
+                  <td class="text-center"><?= $no++ ?></td>
+                  <td class="text-center"><?= $value['kode_menu'] ?></td>
+                  <td><?= $value['nama_menu'] ?></td>
+                  <td class="text-center"><?= $value['nama_kategori'] ?></td>
+                  <td class="text-center">Rp <?= number_format($value['harga'], 0) ?></td>
+                  <td class="text-center"><?= $value['stok'] ?></td>
+                </tr>
+              <?php } ?>
+            </tbody>
+          </table>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <?php foreach ($transaksi as $key => $value) { ?>
+      <!-- modal delete data-->
+      <div class="modal fade" id="delete-data<?= $value['id_rinci'] ?>">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Delete Data</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p> Apakah Anda Yakin Untuk Menghapus <strong><?= $value['nama_menu'] ?></strong> dari keranjang?</p>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Close</button>
+              <a href="<?= base_url('Transaksi/DeleteData/' . $value['id_rinci']) ?>" class="btn btn-danger btn-flat">Delete</a>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+    <?php } ?>
+
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
       <!-- Control sidebar content goes here -->
@@ -214,10 +293,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <!-- Main Footer -->
     <footer class="main-footer">
-      <!-- To the right -->
-      <div class="float-right d-none d-sm-inline">
-        Anything you want
-      </div>
       <!-- Default to the left -->
       <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
     </footer>
@@ -296,6 +371,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
       }
       return i;
     }
+  </script>
+
+  <script>
+    $(function() {
+      $("#example1").DataTable({
+        "responsive": true,
+        "lengthChange": true,
+        "autoWidth": false,
+        "paging": true,
+        "info": true,
+        "buttons": ["copy", "csv", "excel", "pdf", "print"]
+      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    });
   </script>
 
 </body>

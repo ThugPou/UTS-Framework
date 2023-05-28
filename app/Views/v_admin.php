@@ -2,14 +2,14 @@
     <!-- small box -->
     <div class="small-box bg-info">
         <div class="inner">
-            <h3>150</h3>
+            <h3><?= $menue ?></h3>
 
             <p>Menu</p>
         </div>
         <div class="icon">
             <<i class="fas fa-utensils"></i>
         </div>
-        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        <a href="<?= base_url('Menu') ?>" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
     </div>
 </div>
 <!-- ./col -->
@@ -17,14 +17,14 @@
     <!-- small box -->
     <div class="small-box bg-success">
         <div class="inner">
-            <h3>53<sup style="font-size: 20px">%</sup></h3>
+            <h3><?= $kategori ?></h3>
 
             <p>Kategori</p>
         </div>
         <div class="icon">
             <i class="fas fa-th-list"></i>
         </div>
-        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        <a href="<?= base_url('Kategori') ?>" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
     </div>
 </div>
 <!-- ./col -->
@@ -32,14 +32,14 @@
     <!-- small box -->
     <div class="small-box bg-warning">
         <div class="inner">
-            <h3>44</h3>
+            <h3><?= $user ?></h3>
 
             <p>User</p>
         </div>
         <div class="icon">
             <i class="fas fa-users"></i>
         </div>
-        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        <a href="<?= base_url('User') ?>" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
     </div>
 </div>
 <!-- ./col -->
