@@ -6,6 +6,9 @@ use CodeIgniter\Model;
 
 class ModelUser extends Model
 {
+    protected $table      = 'tbl_user';
+
+
     public function AllData()
     {
         return $this->db->table('tbl_user')

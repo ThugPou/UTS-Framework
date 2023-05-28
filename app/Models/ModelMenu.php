@@ -6,6 +6,8 @@ use CodeIgniter\Model;
 
 class ModelMenu extends Model
 {
+    protected $table      = 'tbl_menu';
+
     public function AllData()
     {
         return $this->db->table('tbl_menu')
