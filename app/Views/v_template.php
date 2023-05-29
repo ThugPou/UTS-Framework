@@ -142,9 +142,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </li>
                             </ul>
                         <li class="nav-item">
-                            <a href="<?= base_url('Admin/Setting') ?>" class="nav-link <?= $menu == 'setting' ? 'active' : '' ?>">
+                            <a href="<?= base_url('Laporan') ?>" class="nav-link <?= $menu == 'laporan' ? 'active' : '' ?>">
                                 <i class="nav-icon fas fa-cogs"></i>
-                                <p>Settings</p>
+                                <p>Laporan</p>
                             </a>
                         </li>
                         </li>

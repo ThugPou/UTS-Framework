@@ -126,16 +126,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </div>
             </div>
           </div>
+
           <div class="col-lg-5">
-            <div class="card card-primary card-outline">
-              <div class="card-header">
-                <h5 class="card-title m-0"></h5>
-              </div>
+            <div class="card bg-black">
               <div class="card-body bg-black text-right">
-                <label class="display-4 text-blue">Rp 1,500,000,-</label>
+                <label class="display-4 text-green">Rp. <?= number_format($grand_total, 0) ?></label>
               </div>
             </div>
           </div>
+
           <!-- /.col-md-6 -->
           <div class="col-lg-12">
             <!-- .col-md-12 -->
@@ -143,7 +142,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <div class="card-body">
                 <div class="row">
                   <div class="col-12">
-                    <?php echo form_open('Transaksi/InsertData') ?>
+                    <?php echo form_open('Transaksi/InsertCart') ?>
                     <div class="row">
                       <div class="col-2 input-group">
                         <input name="kode_menu" id="kode_menu" class="form-control" placeholder="Kode Menu" autocomplete="off">
@@ -151,7 +150,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                           <a href="#" class="btn btn-primary btn-flat" data-toggle="modal" data-target="#view-menu">
                             <i class="fas fa-search"></i>
                           </a>
-                          <button class="btn btn-danger btn-flat">
+                          <button onclick="KodeKosong()" class=" btn btn-danger">
                             <i class="fas fa-times"></i>
                           </button>
                         </span>
@@ -170,8 +169,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                       </div>
                       <div class="col-3">
                         <button type="submit" class="btn btn-flat btn-primary"><i class="fas fa-receipt"></i>Tambah</button>
-                        <button type="reset" class="btn btn-flat btn-warning"><i class="fas fa-sync"></i>Clear</button>
-                        <button class="btn btn-flat btn-success"><i class="fas fa-cash-register"></i>Bayar</button>
+                        <a href="<?= base_url('Transaksi/ResetCart') ?>" class="btn btn-flat btn-warning"><i class="fas fa-sync"></i>Clear</a>
+                        <a href="<?= base_url('Transaksi/SimpanTransaksi') ?>" class="btn btn-flat btn-success"><i class="fas fa-cash-register"></i>Bayar</a>
                       </div>
                     </div>
                     <?php form_close() ?>
@@ -193,15 +192,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </tr>
                       </thead>
                       <tbody>
-                        <?php foreach ($transaksi as $key => $value) { ?>
+                        <?php foreach ($cart as $key => $value) { ?>
                           <tr>
-                            <td><?= $value['kode_menu'] ?></td>
-                            <td><?= $value['nama_menu'] ?></td>
-                            <td><?= $value['nama_kategori'] ?></td>
-                            <td class="text-right"><?= $value['harga'] ?></td>
+                            <td><?= $value['id'] ?></td>
+                            <td><?= $value['name'] ?></td>
+                            <td><?= $value['options']['kategori'] ?></td>
+                            <td class="text-right"><?= $value['price'] ?></td>
                             <td class="text-center"><?= $value['qty'] ?></td>
-                            <td class="text-right"><?= $total_harga = $value['harga'] * $value['qty'] ?></td>
-                            <td class="text-center"><a class="btn btn-flat btn-danger" data-toggle="modal" data-target="#delete-data<?= $value['id_rinci'] ?>"><i class="fa fa-times"></i></a></td>
+                            <td class="text-right"><?= $value['subtotal'] ?></td>
+                            <td class="text-center">
+                              <a href="<?= base_url('Transaksi/RemoveItemCart/' . $value['rowid']) ?>" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a>
+                            </td>
                           </tr>
                         <?php } ?>
                       </tbody>
@@ -212,6 +213,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </div>
           </div>
         </div>
+        <?php
+        if (session()->getFlashData('pesan')) {
+          echo '<div class="alert alert-success alert-dismissible"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <i class="icon fas fa-check"></i>';
+          echo session()->getFlashData('pesan');
+          echo '</div>';
+        }
+        ?>
         <!-- /.row -->
       </div>
       <!-- /.content -->
@@ -259,32 +268,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </div>
     <!-- /.modal -->
 
-    <?php foreach ($transaksi as $key => $value) { ?>
-      <!-- modal delete data-->
-      <div class="modal fade" id="delete-data<?= $value['id_rinci'] ?>">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Delete Data</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <p> Apakah Anda Yakin Untuk Menghapus <strong><?= $value['nama_menu'] ?></strong> dari keranjang?</p>
-            </div>
-            <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Close</button>
-              <a href="<?= base_url('Transaksi/DeleteData/' . $value['id_rinci']) ?>" class="btn btn-danger btn-flat">Delete</a>
-            </div>
-          </div>
-          <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-      </div>
-      <!-- /.modal -->
-    <?php } ?>
-
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
       <!-- Control sidebar content goes here -->
@@ -302,8 +285,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <script>
     $(document).ready(function() {
       $('#kode_menu').focus();
-
-
       $('#kode_menu').keydown(function(e) {
         let kode_menu = $('#kode_menu').val();
         if (e.keyCode == 13) {
@@ -320,6 +301,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
         }
       });
     });
+
+    function KodeKosong() {
+      let kode = $('#kode_menu').val()
+      kode.val('');
+    }
 
     function CekMenu() {
       $.ajax({
@@ -340,6 +326,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('[name = "nama_menu"]').val(response.nama_menu);
             $('[name = "nama_kategori"]').val(response.nama_kategori);
             $('[name = "harga"]').val(response.harga);
+            $('[name = "stok"]').val(response.stok);
             $('#qty').focus();
           }
         }

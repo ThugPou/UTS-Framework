@@ -30,22 +30,13 @@ class ModelTransaksi extends Model
             ->getRowArray();
     }
 
-    public function AllData()
+    public function InsertTransaksi($data)
     {
-        return $this->db->table('tbl_rinci_transaksi')
-            ->get()
-            ->getResultArray();
+        $this->db->table('tbl_transaksi')->insert($data);
     }
 
-    public function InsertData($data)
+    public function InsertRinciTransaksi($data)
     {
         $this->db->table('tbl_rinci_transaksi')->insert($data);
-    }
-
-    public function DeleteData($data)
-    {
-        $this->db->table('tbl_rinci_transaksi')
-            ->where('id_rinci', $data['id_rinci'])
-            ->delete($data);
     }
 }
