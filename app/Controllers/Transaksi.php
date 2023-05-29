@@ -20,12 +20,14 @@ class Transaksi extends BaseController
     }
     public function index()
     {
+        $cart = \Config\Services::cart();
         $data = [
             'judul' => 'Transaksi',
             'no_faktur' => $this->ModelTransaksi->NoFaktur(),
-            'transaksi' => $this->ModelTransaksi->AllData(),
             'menu' => $this->ModelMenu->AllData(),
             'kategori' => $this->ModelKategori->AllData(),
+            'cart' => $cart->contents(),
+            'grand_total' => $cart->total(),
         ];
         return view('v_transaksi', $data);
     }
@@ -50,27 +52,70 @@ class Transaksi extends BaseController
         echo json_encode($data);
     }
 
-    public function InsertData()
+    public function InsertCart()
     {
-        $data = [
-            'kode_menu' => $this->request->getPost('kode_menu'),
-            'nama_menu' => $this->request->getPost('nama_menu'),
-            'nama_kategori' => $this->request->getPost('nama_kategori'),
-            'harga' => $this->request->getPost('harga'),
-            'qty' => $this->request->getPost('qty'),
-        ];
-        $this->ModelTransaksi->InsertData($data);
-        session()->setFlashdata('pesan', 'Pesanan Masuk Keranjang');
-        return redirect()->to('Transaksi');
+
+        $cart = \Config\Services::cart();
+        $cart->insert(array(
+            'id'    => $this->request->getPost('kode_menu'),
+            'qty'   => $this->request->getPost('qty'),
+            'price' => $this->request->getPost('harga'),
+            'name'  => $this->request->getPost('nama_menu'),
+            'options' => array(
+                'kategori'  => $this->request->getPost('nama_kategori'),
+            )
+        ));
+        return redirect()->to(base_url('Transaksi'));
     }
 
-    public function DeleteData($id_rinci)
+    public function ViewCart()
     {
+        $cart = \Config\Services::cart();
+        $data = $cart->contents();
+        echo dd($data);
+    }
+
+    public function ResetCart()
+    {
+        $cart = \Config\Services::cart();
+        $cart->destroy();
+        return redirect()->to(base_url('Transaksi'));
+    }
+
+    public function RemoveItemCart($rowid)
+    {
+        $cart = \Config\Services::cart();
+        $cart->remove($rowid);
+        return redirect()->to(base_url('Transaksi'));
+    }
+
+    public function SimpanTransaksi()
+    {
+        $cart = \Config\Services::cart();
+        $produk = $cart->contents();
+        $no_faktur = $this->ModelTransaksi->NoFaktur();
+        foreach ($produk as $key => $value) {
+            $data = [
+                'no_faktur' => $no_faktur,
+                'kode_menu' => $value['id'],
+                'nama_menu'  => $value['name'],
+                'nama_kategori'  => $value['options']['kategori'],
+                'harga' => $value['price'],
+                'qty' => $value['qty'],
+                'total_harga' => $value['subtotal'],
+
+            ];
+            $this->ModelTransaksi->InsertRinciTransaksi($data);
+        }
         $data = [
-            'id_rinci' => $id_rinci,
+            'no_faktur' => $no_faktur,
+            'tgl_transaksi' => date('Y-m-d'),
+            'jam' => date('H:i:s'),
+            'grand_total' => $cart->total(),
         ];
-        $this->ModelTransaksi->DeleteData($data);
-        session()->setFlashdata('pesan', 'Data Berhasil Dihapus');
+        $this->ModelTransaksi->InsertTransaksi($data);
+        $cart->destroy();
+        session()->setFlashdata('pesan', 'Transaksi Berhasil Disimpan!');
         return redirect()->to('Transaksi');
     }
 }
